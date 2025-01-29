@@ -53,7 +53,7 @@ services:
 # 网络配置
 networks:
   thrivex-network:
-    external: true  # 使用外部已存在的网络
+    driver: bridge  # 移除external配置，改用bridge驱动
 
 # 数据卷配置
 volumes:
