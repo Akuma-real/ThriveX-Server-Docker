@@ -5,7 +5,7 @@ services:
   # Spring Boot应用服务配置
   app:
     build: .  # 使用当前目录的Dockerfile构建
-    image: your-dockerhub-username/thrivex-server:latest
+    image: juneink/thrivex-server:latest
     container_name: thrivex-server
     networks:
       - thrivex-network
