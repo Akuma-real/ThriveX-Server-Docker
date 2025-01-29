@@ -2,11 +2,44 @@
 version: '3.8'
 
 services:
+  # MySQL服务配置
+  mysql:
+    image: mysql:8.0.39
+    container_name: thrivex-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456  # MySQL root密码
+      MYSQL_DATABASE: thrivex    # 初始数据库名
+    networks:
+      - thrivex-network
+    command: --default-authentication-plugin=mysql_native_password  # 使用原生密码认证
+    volumes:
+      - mysql_data:/var/lib/mysql  # 数据持久化
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+  # 数据库初始化服务
+  db-init:
+    image: mysql:8.0.39
+    volumes:
+      - ./init-db.sh:/init-db.sh
+    entrypoint: ["/bin/bash", "/init-db.sh"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - thrivex-network
+
   # Spring Boot应用服务配置
   app:
     build: .  # 使用当前目录的Dockerfile构建
     image: juneink/thrivex-server:latest
     container_name: thrivex-server
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
     networks:
       - thrivex-network
     environment:
