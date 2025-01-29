@@ -7,15 +7,15 @@ services:
     image: mysql:8.0.39
     container_name: thrivex-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 123456  # MySQL root密码
-      MYSQL_DATABASE: thrivex    # 初始数据库名
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: thrivex
     networks:
       - thrivex-network
-    command: --default-authentication-plugin=mysql_native_password  # 使用原生密码认证
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - mysql_data:/var/lib/mysql  # 数据持久化
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -34,7 +34,6 @@ services:
 
   # Spring Boot应用服务配置
   app:
-    build: .  # 使用当前目录的Dockerfile构建
     image: juneink/thrivex-server:latest
     container_name: thrivex-server
     depends_on:
@@ -43,18 +42,16 @@ services:
     networks:
       - thrivex-network
     environment:
-      # 应用配置
       PORT: 8080
       DB_INFO: mysql:3306/thrivex
       DB_USERNAME: root
-      DB_PASSWORD: 123456
-      # 邮件配置（可选）
-      EMAIL_HOST: smtp.qq.com
-      EMAIL_PORT: 465
-      EMAIL_USERNAME: none  # 替换为实际的邮箱
-      EMAIL_PASSWORD: none  # 替换为实际的授权码
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     ports:
-      - "8080:8080"  # 只暴露应用端口
+      - "${HOST_PORT}:8080"  # 允许自定义主机端口
 
 # 网络配置
 networks:
