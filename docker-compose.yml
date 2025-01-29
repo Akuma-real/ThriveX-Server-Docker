@@ -43,17 +43,23 @@ services:
     networks:
       - thrivex-network
     environment:
-      # 数据库连接配置
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/thrivex?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 123456
+      # 应用配置
+      PORT: 8080
+      DB_INFO: mysql:3306/thrivex
+      DB_USERNAME: root
+      DB_PASSWORD: 123456
+      # 邮件配置（可选）
+      EMAIL_HOST: smtp.qq.com
+      EMAIL_PORT: 465
+      EMAIL_USERNAME: none  # 替换为实际的邮箱
+      EMAIL_PASSWORD: none  # 替换为实际的授权码
     ports:
       - "8080:8080"  # 只暴露应用端口
 
 # 网络配置
 networks:
   thrivex-network:
-    driver: bridge  # 移除external配置，改用bridge驱动
+    driver: bridge
 
 # 数据卷配置
 volumes:

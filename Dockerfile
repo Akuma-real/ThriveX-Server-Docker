@@ -10,5 +10,13 @@ COPY blog.jar /app/blog.jar
 # 暴露8080端口
 EXPOSE 8080
 
-# 启动命令
-ENTRYPOINT ["java", "-jar", "blog.jar"] 
+# 启动命令，使用环境变量传递参数
+ENTRYPOINT ["sh", "-c", "java -jar blog.jar \
+    --PORT=${PORT:-8080} \
+    --DB_INFO=${DB_INFO:-mysql:3306/thrivex} \
+    --DB_USERNAME=${DB_USERNAME:-root} \
+    --DB_PASSWORD=${DB_PASSWORD:-123456} \
+    --EMAIL_HOST=${EMAIL_HOST:-smtp.qq.com} \
+    --EMAIL_PORT=${EMAIL_PORT:-465} \
+    --EMAIL_USERNAME=${EMAIL_USERNAME:-none} \
+    --EMAIL_PASSWORD=${EMAIL_PASSWORD:-none}"] 
